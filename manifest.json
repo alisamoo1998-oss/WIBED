@@ -1,0 +1,10 @@
+{
+  "name": "ماراي PWA",
+  "short_name": "ماراي",
+  "description": "تطبيق شخصي لإدارة قطعان الأغنام",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f8ec",
+  "theme_color": "#4CAF50",
+  "icons": []
+}

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#4CAF50" />
+  <title>ماراي PWA</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div>
+      <h1>🐑 ماراي</h1>
+      <p class="subtitle">إدارة القطيع الشخصية</p>
+    </div>
+    <button id="installBtn" class="ghost hidden">تثبيت</button>
+  </header>
+
+  <main class="container">
+    <section class="dashboard-grid">
+      <article class="card stat-card">
+        <span class="emoji">🐑</span>
+        <div>
+          <h3>الإجمالي النشط</h3>
+          <strong id="statTotal">0</strong>
+        </div>
+      </article>
+      <article class="card stat-card">
+        <span class="emoji">🐏</span>
+        <div>
+          <h3>الكباش</h3>
+          <strong id="statRams">0</strong>
+        </div>
+      </article>
+      <article class="card stat-card">
+        <span class="emoji">🐐</span>
+        <div>
+          <h3>النعاج</h3>
+          <strong id="statEwes">0</strong>
+        </div>
+      </article>
+      <article class="card stat-card">
+        <span class="emoji">🍼</span>
+        <div>
+          <h3>الصغار</h3>
+          <strong id="statLambs">0</strong>
+        </div>
+      </article>
+      <article class="card stat-card warning">
+        <span class="emoji">⏰</span>
+        <div>
+          <h3>تنبيهات عاجلة</h3>
+          <strong id="statAlerts">0</strong>
+        </div>
+      </article>
+      <article class="card stat-card ready">
+        <span class="emoji">✨</span>
+        <div>
+          <h3>جاهزة للتكاثر</h3>
+          <strong id="statReady">0</strong>
+        </div>
+      </article>
+    </section>
+
+    <section class="card quick-actions">
+      <h2>إجراءات سريعة</h2>
+      <div class="actions-row">
+        <button class="primary" id="showAddModalBtn">+ إضافة رأس</button>
+        <button id="seedDemoBtn">تحميل بيانات تجريبية</button>
+        <button id="exportBtn">تصدير JSON</button>
+        <label class="file-btn">
+          استيراد JSON
+          <input type="file" id="importFile" accept="application/json" />
+        </label>
+      </div>
+    </section>
+
+    <section class="card alerts-panel">
+      <div class="section-head">
+        <h2>التنبيهات البصرية</h2>
+      </div>
+      <div id="alertsList" class="alerts-list empty-state">لا توجد تنبيهات</div>
+    </section>
+
+    <section class="card filters-panel">
+      <div class="section-head">
+        <h2>القطيع الحالي</h2>
+      </div>
+      <div class="filters-grid">
+        <input type="text" id="searchInput" placeholder="ابحث بالمعرف أو اللون أو المجموعة" />
+        <select id="groupFilter">
+          <option value="all">كل المجموعات</option>
+          <option value="lamb">الحملان</option>
+          <option value="ewe">النعاج</option>
+          <option value="ram">الكباش</option>
+          <option value="unspecified">غير محدد</option>
+        </select>
+        <select id="statusFilter">
+          <option value="all">كل الحالات</option>
+          <option value="rest">راحة ما بعد الولادة</option>
+          <option value="ready">جاهز</option>
+          <option value="pregnant">حامل</option>
+          <option value="normal">طبيعي</option>
+        </select>
+      </div>
+      <div id="animalGrid" class="animal-grid"></div>
+    </section>
+
+    <section class="card archive-panel">
+      <div class="section-head">
+        <h2>الأرشيف</h2>
+      </div>
+      <div id="archiveList" class="archive-list empty-state">لا يوجد أرشيف</div>
+    </section>
+  </main>
+
+  <dialog id="animalModal">
+    <form id="animalForm" method="dialog">
+      <div class="modal-head">
+        <h2 id="modalTitle">إضافة رأس</h2>
+        <button type="button" class="ghost" id="closeModalBtn">✕</button>
+      </div>
+
+      <div class="form-grid">
+        <label>
+          المعرف
+          <input type="text" id="animalId" required placeholder="مثال: EW-001" />
+        </label>
+        <label>
+          المجموعة
+          <select id="animalGroup" required>
+            <option value="lamb">الحملان</option>
+            <option value="ewe">النعاج</option>
+            <option value="ram">الكباش</option>
+            <option value="unspecified">غير محدد</option>
+          </select>
+        </label>
+        <label>
+          الجنس
+          <select id="animalSex">
+            <option value="unspecified">غير محدد</option>
+            <option value="male">ذكر</option>
+            <option value="female">أنثى</option>
+          </select>
+        </label>
+        <label>
+          اللون
+          <input type="text" id="animalColor" placeholder="أبيض، بني..." />
+        </label>
+        <label>
+          العمر التقريبي
+          <input type="number" id="animalAgeValue" min="0" value="1" required />
+        </label>
+        <label>
+          وحدة العمر
+          <select id="animalAgeUnit">
+            <option value="days">أيام</option>
+            <option value="months" selected>أشهر</option>
+            <option value="years">سنوات</option>
+          </select>
+        </label>
+        <label>
+          طريقة الدخول
+          <select id="animalSource">
+            <option value="purchase">شراء</option>
+            <option value="birth">ولادة</option>
+          </select>
+        </label>
+        <label>
+          آخر تأكيد
+          <input type="date" id="lastConfirmedAt" />
+        </label>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" id="saveAnimalBtn" class="primary">حفظ</button>
+      </div>
+    </form>
+  </dialog>
+
+  <template id="animalCardTemplate">
+    <article class="animal-card card">
+      <div class="animal-top">
+        <div class="animal-icon-wrap">
+          <span class="animal-icon">🐑</span>
+        </div>
+        <div>
+          <h3 class="animal-name"></h3>
+          <p class="animal-meta"></p>
+        </div>
+      </div>
+      <div class="animal-tags"></div>
+      <div class="animal-dates"></div>
+      <div class="animal-actions">
+        <button data-action="confirm">تأكيد</button>
+        <button data-action="togglePregnancy">تخصيب</button>
+        <button data-action="birth">ولادة</button>
+        <button data-action="editSex">الجنس</button>
+        <button data-action="archive" class="danger">أرشف</button>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
